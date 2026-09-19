@@ -47,11 +47,28 @@ If creating the web service manually in the Render dashboard:
 1. Click **New +** -> **Web Service**.
 2. Select your repository.
 3. Configure the following settings:
-   | Setting | Value |
+
+   > [!IMPORTANT]
+   > **Choice of Root Directory on Render**:
+   >
+   > **Method 1 (Recommended - Leave Root Directory Blank)**:
+   > - **Root Directory**: *(leave completely blank / empty)*
+   > - **Build Command**: `pip install -r backend/requirements.txt` (or `./build.sh`)
+   > - **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+   >
+   > **Method 2 (If you set Root Directory to `backend`)**:
+   > - **Root Directory**: `backend`
+   > - **Build Command**: `pip install -r requirements.txt` (or `./build.sh`)
+   > - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   >
+   > *Note: If you set Root Directory to `backend` and typed `pip install -r backend/requirements.txt`, it will error because it looks for `backend/backend/requirements.txt`!*
+
+   | Setting | Value (Method 1 - Recommended) |
    |---|---|
    | **Name** | `doableforge-backend` |
    | **Region** | Oregon (US West) or closest to your users |
    | **Branch** | `main` |
+   | **Root Directory** | *(Leave blank)* |
    | **Runtime** | `Python 3` |
    | **Build Command** | `pip install -r backend/requirements.txt` |
    | **Start Command** | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` |

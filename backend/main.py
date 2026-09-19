@@ -1,4 +1,14 @@
 import os
+import sys
+from pathlib import Path
+
+# Ensure both project root and backend directory are in sys.path
+_backend_dir = Path(__file__).resolve().parent
+_project_root = _backend_dir.parent
+for _p in [str(_project_root), str(_backend_dir)]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

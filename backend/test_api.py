@@ -3,10 +3,24 @@ from backend.main import app
 
 def test_api():
     with TestClient(app) as client:
-        # 1. Health
-        res = client.get("/api/health")
-        assert res.status_code == 200, f"Health check failed: {res.text}"
-        print("[OK] Health Check Passed:", res.json())
+        # 1. Health Endpoints (/api/health and /health, GET and HEAD)
+        res_api = client.get("/api/health")
+        assert res_api.status_code == 200, f"/api/health failed: {res_api.text}"
+        data_api = res_api.json()
+        assert data_api["status"] == "online"
+        assert data_api["health"] == "healthy"
+        assert "uptime_seconds" in data_api
+        assert data_api["database"]["status"] == "connected"
+        assert "keep_alive" in data_api
+        print("[OK] /api/health GET Passed:", data_api)
+
+        res_render = client.get("/health")
+        assert res_render.status_code == 200, f"/health failed: {res_render.text}"
+        print("[OK] /health GET Passed (Render health check path)")
+
+        res_head = client.head("/health")
+        assert res_head.status_code == 200, f"/health HEAD failed: {res_head.status_code}"
+        print("[OK] /health HEAD Passed")
 
         # 2. Get Projects
         res = client.get("/api/projects")

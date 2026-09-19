@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: doableforge-backend
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: ENABLE_KEEP_ALIVE
+        value: "true"
+      - key: KEEP_ALIVE_INTERVAL
+        value: "10"
+      - key: CORS_ORIGINS
+        value: "http://localhost:5173,http://127.0.0.1:5173,*"
+      # SQLite database is used by default. For persistent PostgreSQL on Render,
+      # connect a Render PostgreSQL instance and Render automatically sets DATABASE_URL.
+      - key: DATABASE_URL
+        value: sqlite:///./doableforge.db

@@ -176,15 +176,21 @@ def migrate_sqlite_columns():
         print(f"[DB MIGRATION WARNING] {e}")
 
 
+from backend.keep_alive import keep_alive_manager
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize SQLite tables
+    # Initialize SQLite / PostgreSQL tables
     Base.metadata.create_all(bind=engine)
     # Perform schema migrations for new columns if needed
     migrate_sqlite_columns()
     # Seed initial database
     seed_initial_data()
+    # Start automated keep-alive self-ping worker (every 5-10s for Render free-tier keep-awake)
+    keep_alive_manager.start()
     yield
+    # Gracefully terminate keep-alive background worker on shutdown
+    await keep_alive_manager.stop()
 
 
 app = FastAPI(
@@ -215,14 +221,28 @@ def read_root():
         "platform": "DoableForge",
         "role": "Enterprise Project Registry API",
         "docs": "/docs",
-        "health": "/api/health"
+        "health": "/health",
+        "api_health": "/api/health",
+        "environment": settings.ENVIRONMENT
     }
 
-@app.get("/api/health")
+@app.get("/health", tags=["Health"])
+@app.head("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
+@app.head("/api/health", tags=["Health"])
 def health_check():
-    return {
-        "status": "online",
-        "escrow_vault": "active",
-        "protocol": "Mainnet Escrow v2.4",
-        "zero_resume_bias": True
-    }
+    """
+    Health check endpoint for Render, uptime monitors, and keep-alive cycles.
+    Returns comprehensive server metrics, uptime, DB status, and ping metrics.
+    """
+    return keep_alive_manager.get_health_status()
+
+if __name__ == "__main__":
+    import uvicorn
+    print(f"Starting {settings.PROJECT_NAME} on {settings.HOST}:{settings.PORT} (Env: {settings.ENVIRONMENT})...")
+    uvicorn.run(
+        "backend.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=False
+    )

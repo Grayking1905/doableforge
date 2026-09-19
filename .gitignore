@@ -80,3 +80,4 @@ Thumbs.db
 .claude/
 .agent/
 .system_generated/
+node_modules

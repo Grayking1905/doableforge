@@ -3,16 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo-mark.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DoableForge — Enterprise Project Registry for MNCs, IT & AI Leaders</title>
+    <!-- Mobile-first viewport: viewport-fit=cover handles iPhone notches & safe areas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Theme color for browser chrome on mobile -->
+    <meta name="theme-color" content="#040306" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>DoableForge — Enterprise Project Registry for MNCs, IT &amp; AI Leaders</title>
     <meta name="description" content="Mission-critical project registry for MNCs, IT enterprises, and AI labs. Executed exclusively by domain-expert verified specialists benchmarked on practical skills, architectural code contributions, and strict deadline velocity." />
-    
-    <!-- Google Fonts -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="DoableForge — Enterprise Project Registry" />
+    <meta property="og:description" content="Mission-critical project registry for MNCs, IT enterprises, and AI labs." />
+    <meta property="og:type" content="website" />
+    <!-- DNS prefetch & preconnect for performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts loaded with display=swap for render performance -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-[#040306] text-white selection:bg-sky-500/30 selection:text-sky-200 antialiased overflow-x-hidden min-h-screen">
+  <body class="bg-[#040306] text-white selection:bg-sky-500/30 selection:text-sky-200 antialiased overflow-x-clip min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

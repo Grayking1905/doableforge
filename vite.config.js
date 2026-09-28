@@ -16,4 +16,24 @@ export default defineConfig({
       ignored: ['**/*.zip', '**/backend/**'],
     },
   },
+  build: {
+    // Target modern browsers for smaller, faster bundles
+    target: 'es2020',
+    // Chunk size warning threshold
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Manual chunks: split Three.js & react-three-fiber away from main bundle
+        // so mobile users who don't scroll to ForgeUniverse don't download it
+        manualChunks: (id) => {
+          if (id.includes('three') || id.includes('@react-three')) {
+            return 'three-vendor';
+          }
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
 })

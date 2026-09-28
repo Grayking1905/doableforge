@@ -69,7 +69,7 @@ export default function BentoGridSection() {
           {/* CARD 1 (Top-Left, Wide: 50% width / 6 cols)                */}
           {/* EXPERT AUDITED SKILL PASSPORT                              */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-12 lg:col-span-6 rounded-[32px] p-7 sm:p-9 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-12 lg:col-span-6 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 lg:p-9 flex flex-col justify-between overflow-hidden group">
             {/* Top Text Header */}
             <div className="flex flex-col gap-2 mb-6">
               <span className="text-xs font-medium text-sky-400 tracking-wider uppercase">
@@ -101,13 +101,13 @@ export default function BentoGridSection() {
                 </span>
               </div>
 
-              {/* Skill Tabs - Apple Segmented Control */}
-              <div className="grid grid-cols-4 gap-1 p-1 rounded-full bg-black/40 border border-white/10 font-mono text-[10px]">
+              {/* Skill Tabs - scrollable on mobile */}
+              <div className="flex sm:grid sm:grid-cols-4 gap-1 p-1 rounded-full bg-black/40 border border-white/10 font-mono text-[10px] overflow-x-auto scroll-x-container">
                 {Object.keys(skillScores).map((skill) => (
                   <button
                     key={skill}
                     onClick={() => setActiveSkill(skill)}
-                    className={`py-1.5 px-2 rounded-full transition-all truncate cursor-pointer ${
+                    className={`py-1.5 px-2.5 rounded-full transition-all truncate cursor-pointer whitespace-nowrap flex-shrink-0 sm:flex-shrink ${
                       activeSkill === skill
                         ? "bg-white/20 text-white font-medium border border-white/25 shadow-sm"
                         : "text-zinc-400 hover:text-zinc-200"
@@ -156,7 +156,7 @@ export default function BentoGridSection() {
           {/* CARD 2 (Top-Middle, Narrow: 25% width / 3 cols)            */}
           {/* ANTI-PEDIGREE PROTOCOL                                     */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[32px] p-7 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 flex flex-col justify-between overflow-hidden group">
             {/* Top Text Header */}
             <div className="flex flex-col gap-2 mb-4">
               <span className="text-xs font-medium text-sky-400 tracking-wider uppercase">
@@ -211,7 +211,7 @@ export default function BentoGridSection() {
           {/* CARD 3 (Top-Right, Narrow: 25% width / 3 cols)             */}
           {/* STRICT DEADLINE VELOCITY                                   */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[32px] p-7 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 flex flex-col justify-between overflow-hidden group">
             {/* Top Text Header */}
             <div className="flex flex-col gap-2 mb-4">
               <span className="text-xs font-medium text-sky-400 tracking-wider uppercase">
@@ -273,7 +273,7 @@ export default function BentoGridSection() {
           {/* CARD 4 (Bottom-Left, Narrow: 25% width / 3 cols)           */}
           {/* AI SEMANTIC MATCHING (PGVECTOR)                            */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[32px] p-7 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 flex flex-col justify-between overflow-hidden group">
             {/* Top Visual: pgvector Match Simulator */}
             <div className="relative w-full rounded-2xl bg-[#090f20]/90 border border-white/[0.12] p-4 flex flex-col gap-2.5 mb-4 shadow-xl">
               <div className="flex items-center justify-between font-mono text-[9px] text-zinc-400 border-b border-white/10 pb-2">
@@ -315,7 +315,7 @@ export default function BentoGridSection() {
           {/* CARD 5 (Bottom-Middle, Narrow: 25% width / 3 cols)         */}
           {/* ENTERPRISE IP & CLEAN ROOM PROTECTION                      */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[32px] p-7 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-6 lg:col-span-3 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 flex flex-col justify-between overflow-hidden group">
             {/* Top Visual: Conflict Warning Sentry */}
             <div className="relative w-full rounded-2xl bg-[#090f20]/90 border border-sky-400/25 p-4 flex flex-col gap-2 mb-4 shadow-xl">
               <div className="flex items-center gap-2 text-sky-400 font-mono text-[10px] font-semibold">
@@ -351,7 +351,7 @@ export default function BentoGridSection() {
           {/* CARD 6 (Bottom-Right, Wide: 50% width / 6 cols)            */}
           {/* REGULATED MILESTONE ESCROW                                 */}
           {/* ========================================================== */}
-          <div className="glass-card md:col-span-12 lg:col-span-6 rounded-[32px] p-7 sm:p-9 flex flex-col justify-between overflow-hidden group">
+          <div className="glass-card md:col-span-12 lg:col-span-6 rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 lg:p-9 flex flex-col justify-between overflow-hidden group">
             {/* Top Visual: Live Milestones Board */}
             <div className="relative w-full rounded-2xl bg-[#090f20]/90 border border-white/[0.12] p-5 flex flex-col gap-3.5 mb-6 shadow-2xl">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
@@ -365,7 +365,7 @@ export default function BentoGridSection() {
               </div>
 
               {/* Milestones Flow */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 font-mono text-[10px]">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[10px]">
                 <div className="p-2.5 rounded-xl bg-white/[0.03] border border-emerald-500/40 flex flex-col gap-1">
                   <span className="text-emerald-400 font-semibold">M1: Architecture</span>
                   <span className="text-zinc-200">$800</span>

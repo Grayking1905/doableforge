@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 
+// Detect low-end / mobile devices for performance throttling
+const isMobile = () =>
+  typeof window !== "undefined" && window.innerWidth < 768;
+const isLowMemory = () =>
+  typeof navigator !== "undefined" &&
+  (navigator.deviceMemory !== undefined ? navigator.deviceMemory <= 4 : isMobile());
+
 export default function ScrollCanvas({
   totalFrames = 240,
   containerRef,
@@ -16,6 +23,11 @@ export default function ScrollCanvas({
   const [isFirstFrameReady, setIsFirstFrameReady] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const isReducedMotionRef = useRef(false);
+  // Determine performance profile once on mount
+  const performanceProfile = useRef({
+    mobile: isMobile(),
+    lowMemory: isLowMemory(),
+  });
 
   // Helper to format frame path: /frames/frame_001.png through /frames/frame_240.png
   const getFrameSrc = useCallback((index) => {
@@ -89,11 +101,14 @@ export default function ScrollCanvas({
   }, [getNearestLoadedImage]);
 
   // Handle high-DPI responsive canvas resize
+  // Cap DPR at 1.5 on mobile/low-memory to cut GPU load by ~44%
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rawDpr = window.devicePixelRatio || 1;
+    const maxDpr = performanceProfile.current.mobile || performanceProfile.current.lowMemory ? 1.5 : 2;
+    const dpr = Math.min(rawDpr, maxDpr);
     const displayWidth = canvas.clientWidth || window.innerWidth;
     const displayHeight = canvas.clientHeight || window.innerHeight;
 
@@ -178,39 +193,43 @@ export default function ScrollCanvas({
         console.warn("Starting frame load issue:", e);
       });
 
+    // Mobile performance: reduce concurrency to avoid memory spikes
+    const CONCURRENT_LOADS = performanceProfile.current.mobile ? 2 : 4;
+    const KEYFRAME_STEP = performanceProfile.current.mobile ? 8 : 4; // every 8th frame on mobile
+    const FILL_BATCH = performanceProfile.current.lowMemory ? 3 : 6;
+
     // 2. High-speed burst for first 30 frames
     const initialBurst = async () => {
       const burstFrames = [];
       for (let i = 2; i <= Math.min(30, totalFrames); i++) {
         burstFrames.push(i);
       }
-      for (let i = 0; i < burstFrames.length; i += 4) {
+      for (let i = 0; i < burstFrames.length; i += CONCURRENT_LOADS) {
         if (isCancelled) return;
-        await Promise.allSettled(burstFrames.slice(i, i + 4).map(loadImage));
+        await Promise.allSettled(burstFrames.slice(i, i + CONCURRENT_LOADS).map(loadImage));
       }
     };
 
-    // 3. Staggered keyframe coverage across all 240 frames (every 4th frame)
+    // 3. Staggered keyframe coverage across all frames
     const keyframeBurst = async () => {
       await initialBurst();
       const keyframes = [];
-      for (let i = 31; i <= totalFrames; i += 4) {
+      for (let i = 31; i <= totalFrames; i += KEYFRAME_STEP) {
         keyframes.push(i);
       }
-      for (let i = 0; i < keyframes.length; i += 4) {
+      for (let i = 0; i < keyframes.length; i += CONCURRENT_LOADS) {
         if (isCancelled) return;
-        await Promise.allSettled(keyframes.slice(i, i + 4).map(loadImage));
+        await Promise.allSettled(keyframes.slice(i, i + CONCURRENT_LOADS).map(loadImage));
       }
 
-      // 4. Fill in remaining frames smoothly in background pools
+      // 4. Fill in remaining frames in background
       const remaining = [];
       for (let i = 1; i <= totalFrames; i++) {
         if (!imagesRef.current[i]) remaining.push(i);
       }
-      const BATCH_SIZE = 6;
-      for (let i = 0; i < remaining.length; i += BATCH_SIZE) {
+      for (let i = 0; i < remaining.length; i += FILL_BATCH) {
         if (isCancelled) return;
-        await Promise.allSettled(remaining.slice(i, i + BATCH_SIZE).map(loadImage));
+        await Promise.allSettled(remaining.slice(i, i + FILL_BATCH).map(loadImage));
       }
     };
 
@@ -243,8 +262,8 @@ export default function ScrollCanvas({
       const scrolledPastTop = -rect.top;
       const totalProgress = Math.min(Math.max(scrolledPastTop / totalScrollableDist, 0), 1);
 
-      // Complete 100% of the frames by 88% of the pinned scroll distance
-      const FRAME_SCRUB_RATIO = 0.88;
+      // Complete 100% of the frames across the full pinned scroll distance
+      const FRAME_SCRUB_RATIO = 1.0;
       const frameProgress = Math.min(Math.max(totalProgress / FRAME_SCRUB_RATIO, 0), 1);
 
       // Map 0% -> frame 1, 100% -> frame 240
@@ -332,7 +351,7 @@ export default function ScrollCanvas({
       {/* HTML5 Canvas */}
       <canvas
         ref={canvasRef}
-        className="block w-full h-full object-cover select-none pointer-events-none transition-opacity duration-700"
+        className="block w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300"
         style={{
           opacity: isFirstFrameReady ? 1 : 0,
         }}
@@ -343,8 +362,8 @@ export default function ScrollCanvas({
         className="pointer-events-none absolute inset-0 z-10"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(6, 8, 14, 0.6) 100%),
-            linear-gradient(to bottom, rgba(6, 8, 14, 0.65) 0%, transparent 20%, transparent 80%, rgba(6, 8, 14, 0.95) 100%)
+            radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(6, 8, 14, 0.45) 100%),
+            linear-gradient(to bottom, rgba(6, 8, 14, 0.4) 0%, transparent 20%, transparent 80%, rgba(6, 8, 14, 0.55) 100%)
           `
         }}
       />

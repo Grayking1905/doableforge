@@ -177,35 +177,35 @@ export default function PseudonymClaimSection() {
             Built for MNCs, IT giants, and AI companies to lock mission-critical milestones into regulated escrow. Executed exclusively by top freelancers pre-verified by domain experts on practical skills, architectural code contributions, and strict deadline velocity.
           </p>
 
-          {/* Role Switcher - Apple Segmented Control */}
-          <div className="flex items-center gap-1 mt-8 p-1 rounded-full bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl">
+          {/* Role Switcher - scrollable on mobile */}
+          <div className="flex items-center gap-1 mt-8 p-1 rounded-full bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl overflow-x-auto scroll-x-container">
             <button
               onClick={() => {
                 setRole("client");
                 setProjectRegistered(false);
               }}
-              className={`flex items-center gap-2 px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 role === "client"
                   ? "bg-white text-zinc-950 font-semibold shadow-sm"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Enterprise Client (Register Project)</span>
+              <Building2 className="w-3.5 h-3.5 shrink-0" />
+              <span>Enterprise Client</span>
             </button>
             <button
               onClick={() => {
                 setRole("specialist");
                 setSpecialistAudited(false);
               }}
-              className={`flex items-center gap-2 px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 role === "specialist"
                   ? "bg-white text-zinc-950 font-semibold shadow-sm"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <Award className="w-3.5 h-3.5" />
-              <span>Specialist (Domain Expert Audit)</span>
+              <Award className="w-3.5 h-3.5 shrink-0" />
+              <span>Specialist Audit</span>
             </button>
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function PseudonymClaimSection() {
         {/* ============================================================ */}
         {/* INTERACTIVE INTAKE CONTAINER                                 */}
         {/* ============================================================ */}
-        <div className="glass-card rounded-[32px] p-6 sm:p-10 shadow-2xl flex flex-col gap-6">
+        <div className="glass-card rounded-[28px] sm:rounded-[32px] p-5 sm:p-8 md:p-10 shadow-2xl flex flex-col gap-6">
           
           {role === "client" ? (
             <>
@@ -464,13 +464,13 @@ export default function PseudonymClaimSection() {
                     <label className="text-zinc-400 uppercase tracking-wider font-semibold">
                       3. Primary Domain Track for Expert Audit
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {["Distributed Systems", "AI / Vector Engines", "3D WebGPU & GLSL", "High-Concurrency Backend"].map((track) => (
                         <button
                           key={track}
                           type="button"
                           onClick={() => setAuditTrack(track)}
-                          className={`p-2.5 rounded-xl border text-left text-[11px] transition-all cursor-pointer ${
+                          className={`p-2.5 rounded-xl border text-left text-[10px] sm:text-[11px] transition-all cursor-pointer ${
                             auditTrack === track
                               ? "bg-sky-500/20 border-sky-500 text-white font-semibold"
                               : "bg-white/[0.02] border-white/10 text-zinc-400 hover:text-white"

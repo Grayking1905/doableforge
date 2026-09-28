@@ -18,7 +18,6 @@ export default function Footer() {
   };
 
   const links = [
-    { name: "Topology", href: "#universe" },
     { name: "Verification", href: "#verification" },
     { name: "Projects", href: "#projects" },
     { name: "Register", href: "#register" },

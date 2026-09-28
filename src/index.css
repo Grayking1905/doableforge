@@ -1,9 +1,36 @@
 @import "tailwindcss";
 
-html {
-  scroll-behavior: smooth;
+/* ============================================================
+   TAILWIND V4 CUSTOM BREAKPOINTS
+   xs = 480px (between mobile and sm:640px)
+   ============================================================ */
+@theme {
+  --breakpoint-xs: 480px;
 }
 
+
+
+/* ============================================================
+   GLOBAL BASE
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
+  /* iOS momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent font-size inflation on device rotation */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Ensure full mobile safe-area support for notched devices */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ============================================================
+   CSS DESIGN TOKENS
+   ============================================================ */
 @layer base {
   :root {
     --background: 220 30% 4%;
@@ -36,10 +63,18 @@ html {
     --ring: 212 100% 50%;
 
     --radius: 1rem;
+
+    /* Safe area inset tokens for use in JS-unavailable contexts */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
 }
 
-/* Apple Typography & System Weights */
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
 .font-bebas {
   font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 0.03em;
@@ -57,101 +92,163 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", 'Inter', system-ui, sans-serif;
 }
 
-/* Apple Custom Minimal Scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #06080e;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.45);
+/* ============================================================
+   SCROLLBAR (Desktop only — hidden on touch devices)
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #06080e;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(56, 189, 248, 0.45);
+  }
 }
 
-/* Infinite Marquee Animations */
+/* ============================================================
+   TOUCH & INTERACTION
+   ============================================================ */
+/* Prevent tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Minimum touch target size (Apple HIG: 44×44pt) */
+button, a, [role="button"] {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ============================================================
+   INFINITE MARQUEE ANIMATIONS
+   ============================================================ */
 @keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0%   { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes marquee-reverse {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
 }
 
 .animate-marquee {
   display: flex;
   width: max-content;
   animation: marquee 35s linear infinite;
+  /* GPU acceleration */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.animate-marquee:hover {
-  animation-play-state: paused;
+/* Pause on hover only for non-touch devices */
+@media (hover: hover) {
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
 }
 
 .animate-marquee-reverse {
   display: flex;
   width: max-content;
   animation: marquee-reverse 38s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.animate-marquee-reverse:hover {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .animate-marquee-reverse:hover {
+    animation-play-state: paused;
+  }
 }
 
+/* Slow marquee on mobile to reduce CPU/battery drain */
+@media (max-width: 640px) {
+  .animate-marquee {
+    animation-duration: 50s;
+  }
+  .animate-marquee-reverse {
+    animation-duration: 55s;
+  }
+}
+
+/* ============================================================
+   SPIN SLOW (logo / bento medallion)
+   ============================================================ */
 @keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .animate-spin-slow {
   animation: spin-slow 22s linear infinite;
 }
 
-/* Apple Liquid Glass Material & Specular Depth */
+/* ============================================================
+   GLASS CARD — Apple Liquid Material
+   ============================================================ */
 .glass-card {
   background: rgba(10, 15, 26, 0.65);
   backdrop-filter: blur(28px) saturate(190%);
   -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 10px 36px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 10px 36px 0 rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Layer promotion for smooth transforms */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
-.glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 16px 44px -10px rgba(56, 189, 248, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
+/* Reduce blur on low-end devices to avoid jank */
+@media (max-width: 640px) {
+  .glass-card {
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
 }
 
-/* Apple Interactive Button Micro-Motion */
+@media (hover: hover) {
+  .glass-card:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow:
+      0 16px 44px -10px rgba(56, 189, 248, 0.18),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* ============================================================
+   BUTTONS — Apple Interactive Micro-Motion
+   ============================================================ */
 .apple-button-primary {
   background: #ffffff;
   color: #050811;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 4px 20px rgba(255, 255, 255, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Touch-friendly minimum size */
+  min-height: 44px;
+  cursor: pointer;
 }
 
-.apple-button-primary:hover {
-  background: #f1f5f9;
-  box-shadow: 0 6px 32px rgba(56, 189, 248, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .apple-button-primary:hover {
+    background: #f1f5f9;
+    box-shadow:
+      0 6px 32px rgba(56, 189, 248, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
 }
 
 .apple-button-primary:active {
@@ -167,21 +264,29 @@ html {
   color: #f8fafc;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+  cursor: pointer;
 }
 
-.apple-button-glass:hover {
-  background: rgba(20, 32, 56, 0.85);
-  border-color: rgba(56, 189, 248, 0.45);
-  color: #ffffff;
-  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .apple-button-glass:hover {
+    background: rgba(20, 32, 56, 0.85);
+    border-color: rgba(56, 189, 248, 0.45);
+    color: #ffffff;
+    box-shadow:
+      0 4px 20px rgba(56, 189, 248, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
 }
 
 .apple-button-glass:active {
   transform: scale(0.97);
 }
 
-/* Apple Segmented Control Pill Container */
+/* ============================================================
+   SEGMENTED CONTROL PILL
+   ============================================================ */
 .apple-segmented-control {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -192,29 +297,55 @@ html {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Apple Liquid Glass Navbar Specifications */
+/* ============================================================
+   APPLE LIQUID GLASS NAVBAR
+   ============================================================ */
 .apple-liquid-glass-navbar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 40%, rgba(10, 20, 42, 0.65) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.06) 40%,
+    rgba(10, 20, 42, 0.65) 100%
+  );
   backdrop-filter: blur(40px) saturate(220%);
   -webkit-backdrop-filter: blur(40px) saturate(220%);
   border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 
-    0 16px 44px -8px rgba(0, 0, 0, 0.7), 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.55), 
-    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.12), 
+  box-shadow:
+    0 16px 44px -8px rgba(0, 0, 0, 0.7),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.12),
     0 0 32px -4px rgba(56, 189, 248, 0.32);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@media (max-width: 640px) {
+  .apple-liquid-glass-navbar {
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  }
+}
+
 .apple-liquid-glass-navbar-scrolled {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(6, 12, 28, 0.85) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(6, 12, 28, 0.85) 100%
+  );
   backdrop-filter: blur(44px) saturate(240%);
   -webkit-backdrop-filter: blur(44px) saturate(240%);
   border: 1px solid rgba(255, 255, 255, 0.36);
-  box-shadow: 
-    0 22px 55px -10px rgba(0, 0, 0, 0.85), 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.7), 
+  box-shadow:
+    0 22px 55px -10px rgba(0, 0, 0, 0.85),
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.7),
     0 0 40px -4px rgba(56, 189, 248, 0.45);
+}
+
+@media (max-width: 640px) {
+  .apple-liquid-glass-navbar-scrolled {
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+  }
 }
 
 .apple-glass-pill {
@@ -226,9 +357,95 @@ html {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.apple-glass-pill:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 15px rgba(56, 189, 248, 0.25);
+@media (hover: hover) {
+  .apple-glass-pill:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      0 0 15px rgba(56, 189, 248, 0.25);
+  }
 }
 
+/* ============================================================
+   REDUCED MOTION — respect OS accessibility setting
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none;
+  }
+
+  .animate-spin-slow {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   MOBILE OVERFLOW PROTECTION
+   Use clip instead of hidden to prevent breaking position:sticky
+   ============================================================ */
+section, .section-container {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+#hero {
+  overflow: visible;
+  overflow-x: visible;
+}
+
+/* ============================================================
+   SCROLL-LOCK WHEN MOBILE MENU IS OPEN
+   ============================================================ */
+.mobile-menu-open {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* ============================================================
+   CANVAS — GPU compositing layer
+   ============================================================ */
+canvas {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ============================================================
+   RESPONSIVE CONTAINER UTILITIES
+   ============================================================ */
+.container-safe {
+  width: 100%;
+  max-width: 100%;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* ============================================================
+   MODAL / OVERLAY — safe-area aware
+   ============================================================ */
+.modal-safe {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+/* ============================================================
+   HORIZONTAL SCROLL CONTAINERS
+   ============================================================ */
+.scroll-x-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-x-container::-webkit-scrollbar {
+  display: none;
+}

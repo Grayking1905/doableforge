@@ -130,7 +130,7 @@ export default function ContactSection() {
           {/* ========================================================== */}
           {/* COLUMN 1: DIRECT EMAIL & TELEMETRY CARD (5 cols)           */}
           {/* ========================================================== */}
-          <div className="lg:col-span-5 flex flex-col justify-between glass-card rounded-[32px] p-7 sm:p-9 shadow-2xl">
+          <div className="lg:col-span-5 flex flex-col justify-between glass-card rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 md:p-9 shadow-2xl">
             <div>
               {/* Card Header */}
               <div className="flex items-center gap-3 mb-6">
@@ -233,7 +233,7 @@ export default function ContactSection() {
           {/* ========================================================== */}
           {/* COLUMN 2: INTERACTIVE INQUIRY COMPOSER (7 cols)            */}
           {/* ========================================================== */}
-          <div className="lg:col-span-7 glass-card rounded-[32px] p-7 sm:p-9 shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-7 glass-card rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 md:p-9 shadow-2xl flex flex-col justify-between">
             <div>
               {/* Card Header & Persona Switcher */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">

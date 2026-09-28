@@ -279,42 +279,42 @@ export default function MarketplaceExplorer() {
             Registered by enterprise teams with pre-funded milestone escrow. Accessible exclusively to top freelancers pre-verified by domain experts on practical skills, architectural code contributions, and strict deadline velocity.
           </p>
 
-          {/* Toggle View Mode: Apple Segmented Control */}
-          <div className="flex items-center gap-1 mt-8 p-1 rounded-full bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl">
+          {/* Toggle View Mode: Apple Segmented Control — scrollable on mobile */}
+          <div className="flex items-center gap-1 mt-8 p-1 rounded-full bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl overflow-x-auto scroll-x-container">
             <button
               onClick={() => setViewMode("projects")}
-              className={`flex items-center gap-2 px-5 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 viewMode === "projects"
                   ? "bg-white text-zinc-950 font-semibold shadow-sm"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Registered Projects ({enterpriseProjects.length})</span>
+              <Building2 className="w-3.5 h-3.5 shrink-0" />
+              <span>Projects ({enterpriseProjects.length})</span>
             </button>
             <button
               onClick={() => setViewMode("specialists")}
-              className={`flex items-center gap-2 px-5 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full font-mono text-xs tracking-wide transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 viewMode === "specialists"
                   ? "bg-white text-zinc-950 font-semibold shadow-sm"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Pre-Verified Specialists ({preVerifiedSpecialists.length})</span>
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>Specialists ({preVerifiedSpecialists.length})</span>
             </button>
           </div>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 pb-6 border-b border-white/10">
-          {/* Category Pills */}
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col gap-4 mb-10 pb-6 border-b border-white/10">
+          {/* Category Pills - scrollable on mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto scroll-x-container pb-1">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full font-mono text-xs transition-colors cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full font-mono text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   selectedCategory === cat
                     ? "bg-sky-500/20 border border-sky-500/40 text-white font-bold"
                     : "bg-white/[0.02] border border-white/10 text-zinc-400 hover:text-white hover:bg-white/[0.05]"
@@ -326,7 +326,7 @@ export default function MarketplaceExplorer() {
           </div>
 
           {/* Search Input */}
-          <div className="relative w-full sm:w-80">
+          <div className="relative w-full sm:max-w-80 sm:self-end">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
             <input
               type="text"
@@ -543,9 +543,9 @@ export default function MarketplaceExplorer() {
             onClick={(e) => {
               if (e.target === e.currentTarget) setActiveModalItem(null);
             }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-200"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-200"
           >
-            <div className="relative w-full max-w-lg rounded-[32px] bg-[#090e1c]/95 border border-white/20 p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur-3xl flex flex-col gap-5">
+            <div className="relative w-full sm:max-w-lg sm:rounded-[32px] rounded-t-[32px] bg-[#090e1c]/95 border border-white/20 p-5 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur-3xl flex flex-col gap-5 max-h-[90dvh] overflow-y-auto modal-safe">
               
               {/* Apple HIG Sheet Grabber Indicator */}
               <div className="w-12 h-1 rounded-full bg-white/25 mx-auto -mt-2 mb-1" />

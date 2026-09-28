@@ -817,10 +817,12 @@ export default function ForgeUniverse() {
           </div>
 
           {/* 3D WebGL Canvas */}
-          <div className="w-full h-[540px] sm:h-[620px] md:h-[680px]">
+          <div className="w-full h-[480px] sm:h-[560px] md:h-[660px]">
             <Canvas
               camera={{ position: [0, 0, 16], fov: 44 }}
               className="w-full h-full cursor-grab active:cursor-grabbing"
+              dpr={[1, typeof window !== 'undefined' && window.innerWidth < 768 ? 1.5 : 2]}
+              performance={{ min: 0.5 }}
             >
               <ambientLight intensity={0.9} />
               <pointLight position={[14, 14, 14]} intensity={2.2} color="#ffffff" />
@@ -828,8 +830,8 @@ export default function ForgeUniverse() {
               <pointLight position={[0, 0, 10]} intensity={0.8} color="#0284c7" />
 
               <Suspense fallback={null}>
-                {/* 320-Star Particle Cosmic Dust */}
-                <ParticleDust count={320} />
+                {/* Particle count reduced on mobile to save GPU */}
+                <ParticleDust count={typeof window !== 'undefined' && window.innerWidth < 768 ? 140 : 320} />
                 
                 {/* 3D Curving Energy Filaments with Photon Pulses */}
                 <TopologyFilamentMesh nodes={allNodes} />
